@@ -1,0 +1,504 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.db{padding:16px;background:var(--color-background-tertiary)}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px}
+.htitle{font-size:16px;font-weight:500;color:var(--color-text-primary)}
+.hsub{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+.live{font-size:11px;color:#16a34a;display:flex;align-items:center;gap:5px;justify-content:flex-end}
+.dot{width:7px;height:7px;border-radius:50%;background:#22c55e}
+.country-select select{font-size:13px;font-weight:500;padding:6px 12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);cursor:pointer}
+
+.top{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
+.tc{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:12px 14px}
+.tc-label{font-size:11px;color:var(--color-text-secondary);margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.tc-val{font-size:21px;font-weight:500;color:var(--color-text-primary);line-height:1.1}
+.tc-sub{font-size:11px;margin-top:5px;line-height:1.4}
+.g{color:#16a34a}.r{color:#dc2626}.a{color:#d97706}
+
+.row2{display:grid;grid-template-columns:1.4fr 1fr;gap:10px;margin-bottom:10px}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px}
+.ctitle{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:2px;display:flex;align-items:center;gap:6px}
+.csub{font-size:11px;color:var(--color-text-secondary);margin-bottom:10px}
+
+.item-row{display:flex;gap:10px;padding:9px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.item-row:last-child{border-bottom:none}
+.icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px}
+.icon-r{background:#fee2e2;color:#dc2626}
+.icon-a{background:#fef3c7;color:#d97706}
+.icon-g{background:#dcfce7;color:#16a34a}
+.icon-b{background:#dbeafe;color:#1e40af}
+.icon-p{background:#f3e8ff;color:#7c3aed}
+.itxt{font-size:12.5px;font-weight:500;color:var(--color-text-primary);line-height:1.4}
+.imeta{font-size:11px;color:var(--color-text-secondary);margin-top:2px;line-height:1.5}
+.tag{display:inline-block;font-size:10px;padding:2px 8px;border-radius:4px;margin-top:5px;font-weight:500;margin-right:4px}
+.tag-r{background:#fee2e2;color:#991b1b}
+.tag-a{background:#fef3c7;color:#92400e}
+.tag-g{background:#dcfce7;color:#166534}
+.tag-b{background:#dbeafe;color:#1e40af}
+.tag-p{background:#f3e8ff;color:#6b21a8}
+
+.bottom{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.tl-item{display:flex;gap:8px;padding:6px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.tl-item:last-child{border-bottom:none}
+.tl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.tl-text{font-size:11.5px;color:var(--color-text-primary);line-height:1.4}
+.tl-date{font-size:10px;color:var(--color-text-tertiary);margin-top:1px}
+
+.fx-chart{display:flex;align-items:flex-end;gap:3px;height:50px;margin:8px 0}
+.fx-bar{flex:1;background:#3b82f6;border-radius:2px 2px 0 0;opacity:0.7}
+.fx-labels{display:flex;justify-content:space-between;font-size:9px;color:var(--color-text-tertiary)}
+
+.upd{font-size:10px;color:var(--color-text-tertiary);text-align:right;margin-top:10px}
+</style>
+
+<div class="db">
+  <div class="header">
+    <div>
+      <div class="htitle" id="d-title">全球财税政策雷达 · Global Tax & FX Policy Radar</div>
+      <div class="hsub" id="d-sub">实时汇率 · 地缘政治 · 税收新政 · 资金流动监控</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="country-select">
+        <select id="country-sel" onchange="render()">
+          <option value="uk">英国 UK</option>
+          <option value="ca" selected>美国加州 California</option>
+          <option value="sg">新加坡 Singapore</option>
+          <option value="jp">日本 Japan</option>
+          <option value="hk">香港 Hong Kong</option>
+          <option value="my">马来西亚 Malaysia</option>
+          <option value="id">印尼 Indonesia</option>
+          <option value="ae">迪拜 UAE</option>
+          <option value="sa">沙特 Saudi Arabia</option>
+          <option value="au">澳大利亚 Australia</option>
+        </select>
+      </div>
+      <div style="text-align:right">
+        <div class="live"><span class="dot"></span>实时监控中</div>
+        <div class="hsub" id="clock"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="top">
+    <div class="tc">
+      <div class="tc-label"><i class="ti ti-currency-dollar" aria-hidden="true"></i> <span id="t-fx-label"></span></div>
+      <div class="tc-val" id="rate-val"></div>
+      <div class="tc-sub" id="t-fx-sub"></div>
+    </div>
+    <div class="tc">
+      <div class="tc-label"><i class="ti ti-percentage" aria-hidden="true"></i> 30天波动率</div>
+      <div class="tc-val" id="t-vol"></div>
+      <div class="tc-sub" id="t-vol-sub"></div>
+    </div>
+    <div class="tc">
+      <div class="tc-label"><i class="ti ti-receipt-tax" aria-hidden="true"></i> 本月税收新政</div>
+      <div class="tc-val" id="t-policy"></div>
+      <div class="tc-sub a">需关注影响</div>
+    </div>
+    <div class="tc">
+      <div class="tc-label"><i class="ti ti-world" aria-hidden="true"></i> 地缘政治风险</div>
+      <div class="tc-val" id="t-geo"></div>
+      <div class="tc-sub" id="t-geo-sub"></div>
+    </div>
+  </div>
+
+  <div class="row2">
+    <div class="card">
+      <div class="ctitle"><i class="ti ti-bell-ringing" aria-hidden="true"></i> 政策与新闻动态</div>
+      <div class="csub">税收新政 · 地缘政治 · 资金事项 · ESG新规 — 按相关性排序</div>
+      <div id="news-list"></div>
+    </div>
+
+    <div class="card">
+      <div class="ctitle"><i class="ti ti-chart-line" aria-hidden="true"></i> 汇率走势（近7日）</div>
+      <div class="csub" id="fx-sub2"></div>
+      <div class="fx-chart" id="fx-chart"></div>
+      <div class="fx-labels" id="fx-labels"></div>
+      <div style="margin-top:12px" id="key-rates"></div>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <div class="card">
+      <div class="ctitle"><i class="ti ti-cash-banknote" aria-hidden="true"></i> 资金与跨境事项</div>
+      <div class="csub">汇出/汇入管制、银行通道、资本项目</div>
+      <div id="capital-list"></div>
+    </div>
+
+    <div class="card">
+      <div class="ctitle"><i class="ti ti-gavel" aria-hidden="true"></i> 税收新政追踪</div>
+      <div class="csub">已生效 / 即将生效的变更</div>
+      <div id="taxpolicy-list"></div>
+    </div>
+
+    <div class="card">
+      <div class="ctitle"><i class="ti ti-globe" aria-hidden="true"></i> 地缘政治关联事件</div>
+      <div class="csub">可能影响当地营商环境的事件</div>
+      <div id="geo-list"></div>
+      <div class="upd" id="last-upd">最后同步：—</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const DATA = {
+  uk: {
+    sub:'GBP/CNY · 英国财税合规与汇率监控',
+    fxLabel:'GBP/CNY', fxBase:9.15, fxSub:'近7日小幅走强',
+    vol:'2.1%', volSub:'正常区间',
+    policyCount:2, geoLevel:'低', geoSub:'政局平稳',
+    fxHistory:[9.08,9.10,9.12,9.13,9.14,9.15,9.15],
+    keyRates:[['基准利率(BoE)','4.25%'],['企业所得税(主税率)','25%'],['VAT标准税率','20%']],
+    news:[
+      {icon:'ti-receipt-tax',color:'r',text:'HMRC发布数字服务税(DST)新征收细则,影响SaaS出口企业',meta:'2026年7月生效,跨境数字服务收入申报口径调整',tags:[['税收新政','r']]},
+      {icon:'ti-cash-banknote',color:'b',text:'英格兰银行维持基准利率4.25%不变,符合市场预期',meta:'下次议息会议8月,汇率短期波动有限',tags:[['利率','b']]},
+      {icon:'ti-leaf',color:'a',text:'英国发布2026年企业碳披露新规草案,扩大适用企业范围',meta:'大型企业供应链ESG数据要求或传导至供应商',tags:[['ESG新规','a']]},
+      {icon:'ti-world',color:'p',text:'英欧贸易协定后续谈判进展缓慢,部分关税安排存在不确定性',meta:'对涉及欧盟供应链的企业需持续关注',tags:[['地缘政治','p']]}
+    ],
+    capital:[
+      {icon:'ti-bank',color:'g',text:'英国对外汇出无外汇管制,资金可自由流动',meta:'企业利润汇出仅需正常税务申报记录'},
+      {icon:'ti-file-invoice',color:'b',text:'与中国无新增双边税收协定变更',meta:'现行中英税收协定继续适用,股息预提税10%'},
+      {icon:'ti-credit-card',color:'a',text:'部分英国银行对中资企业账户审查趋严',meta:'建议提前准备资金来源与业务实质证明文件'}
+    ],
+    taxpolicy:[
+      {color:'#dc2626',text:'数字服务税征收细则更新',date:'2026年7月生效'},
+      {color:'#f59e0b',text:'Corporation Tax小利润税率维持19%(<£50K)',date:'已生效'},
+      {color:'#22c55e',text:'研发税收抵免(R&D Tax Credit)简化申报流程',date:'2026年4月已生效'}
+    ],
+    geo:[
+      {color:'#22c55e',text:'英国国内政局平稳,无重大选举或政策转向预期',date:'持续监控'},
+      {color:'#f59e0b',text:'英欧关系紧张度小幅上升,可能影响供应链关税',date:'关注中'}
+    ]
+  },
+  ca: {
+    sub:'USD/CNY · 美国加州财税合规与汇率监控',
+    fxLabel:'USD/CNY', fxBase:7.2541, fxSub:'近7日窄幅波动',
+    vol:'3.8%', volSub:'接近预警阈值',
+    policyCount:3, geoLevel:'中', geoSub:'中美关税议题持续',
+    fxHistory:[7.24,7.245,7.248,7.25,7.252,7.253,7.2541],
+    keyRates:[['联邦基准利率(Fed)','4.25%-4.50%'],['CA企业所得税','8.84%'],['CA销售税(基础)','7.25%']],
+    news:[
+      {icon:'ti-receipt-tax',color:'r',text:'CDTFA发布SaaS服务在加州销售税处理新指引',meta:'明确数字服务税务认定标准,影响订阅收入计税方式',tags:[['税收新政','r']]},
+      {icon:'ti-world',color:'p',text:'美国对华IoT硬件相关关税分类复审仍在进行中',meta:'涉及智能设备类产品的关税认定结果待公布',tags:[['地缘政治','p']]},
+      {icon:'ti-cash-banknote',color:'b',text:'美联储维持利率不变,市场预期下半年或有一次降息',meta:'USD/CNY短期承压,30天波动率上升至3.8%',tags:[['利率','b'],['汇率预警','a']]},
+      {icon:'ti-building-bank',color:'a',text:'加州2025年起强化对外资企业财务披露要求(透明度法案)',meta:'部分行业需额外提交受益所有人信息',tags:[['资金事项','a']]}
+    ],
+    capital:[
+      {icon:'ti-alert-triangle',color:'a',text:'中美之间大额资金跨境汇划审查趋严(双向)',meta:'建议通过正规银行渠道并保留完整贸易/投资背景文件'},
+      {icon:'ti-file-invoice',color:'b',text:'中美税收协定下股息预提税10%,需提交受益所有人声明',meta:'按时申报可避免默认30%预提税率'},
+      {icon:'ti-bank',color:'g',text:'美国对企业利润汇出无外汇管制',meta:'仅需满足正常联邦/州税务申报义务'}
+    ],
+    taxpolicy:[
+      {color:'#dc2626',text:'CDTFA SaaS销售税新指引',date:'2025年生效'},
+      {color:'#f59e0b',text:'加州透明度法案受益所有人披露要求',date:'2025年部分行业生效'},
+      {color:'#22c55e',text:'CA最低特许经营税$800维持不变',date:'已生效'}
+    ],
+    geo:[
+      {color:'#dc2626',text:'中美关税与技术出口管制议题持续发酵',date:'持续监控'},
+      {color:'#f59e0b',text:'美联储利率路径不确定性对USD/CNY形成压力',date:'关注中'},
+      {color:'#22c55e',text:'加州本地政治环境对外资企业相对友好',date:'稳定'}
+    ]
+  },
+  sg: {
+    sub:'SGD/CNY · 新加坡财税合规与汇率监控',
+    fxLabel:'SGD/CNY', fxBase:5.38, fxSub:'近7日稳定',
+    vol:'1.2%', volSub:'低波动',
+    policyCount:2, geoLevel:'低', geoSub:'区域枢纽,政局稳定',
+    fxHistory:[5.375,5.378,5.380,5.379,5.381,5.380,5.38],
+    keyRates:[['企业所得税','17%'],['GST税率','9%'],['新元利率(SORA)','约3.0%']],
+    news:[
+      {icon:'ti-receipt-tax',color:'r',text:'IRAS发布2025年跨境数字服务GST征收新指引',meta:'明确B2C数字服务进口GST的征收口径',tags:[['税收新政','r']]},
+      {icon:'ti-leaf',color:'a',text:'新加坡碳税2026年起上调至每吨S$45,分阶段实施',meta:'涉及本地制造/能源密集型环节的成本需重新评估',tags:[['ESG新规','a']]},
+      {icon:'ti-cash-banknote',color:'b',text:'新元汇率受美联储政策预期影响,短期维持窄幅波动',meta:'金管局(MAS)维持现有汇率政策区间不变',tags:[['利率','b']]},
+      {icon:'ti-building-bank',color:'g',text:'EDB区域总部税务优惠申请流程简化',meta:'符合条件企业审批周期有望缩短',tags:[['资金事项','g']]}
+    ],
+    capital:[
+      {icon:'ti-bank',color:'g',text:'新加坡无外汇管制,资金进出自由',meta:'是区域资金调度的核心枢纽之一'},
+      {icon:'ti-file-invoice',color:'b',text:'中新税收协定下股息预提税优惠税率5%/10%(视持股比例)',meta:'需提交税收居民证明享受协定优惠'},
+      {icon:'ti-credit-card',color:'g',text:'本地银行(DBS/OCBC/UOB)对企业账户开户流程标准化',meta:'相比香港,新加坡开户周期相对较短'}
+    ],
+    taxpolicy:[
+      {color:'#dc2626',text:'跨境数字服务GST征收新指引',date:'2025年生效'},
+      {color:'#f59e0b',text:'碳税分阶段上调至S$45/吨',date:'2026年起'},
+      {color:'#22c55e',text:'SUTE新创企业税务豁免计划延续',date:'持续有效'}
+    ],
+    geo:[
+      {color:'#22c55e',text:'新加坡政治环境高度稳定,区域避险属性强',date:'稳定'},
+      {color:'#f59e0b',text:'中美科技摩擦背景下,部分企业加速向新加坡转移区域职能',date:'关注中,或为机会'}
+    ]
+  },
+  jp: {
+    sub:'JPY/CNY · 日本财税合规与汇率监控',
+    fxLabel:'JPY/CNY', fxBase:0.048, fxSub:'日元持续偏弱',
+    vol:'2.5%', volSub:'正常区间',
+    policyCount:2, geoLevel:'低', geoSub:'政局稳定,日元政策受关注',
+    fxHistory:[0.0481,0.0480,0.0479,0.0480,0.0479,0.0481,0.048],
+    keyRates:[['法人税(实际税率)','约30%'],['消费税(JCT)','10%'],['日本央行利率','约0.5%']],
+    news:[
+      {icon:'ti-receipt-tax',color:'r',text:'国税厅发布数字服务消费税征收范围扩大解释',meta:'非居民企业提供数字服务的消费税代理申报要求明确化',tags:[['税收新政','r']]},
+      {icon:'ti-cash-banknote',color:'b',text:'日本央行维持超低利率政策,日元持续承压',meta:'JPY/CNY处于历史相对低位,对日采购成本有利',tags:[['利率','b']]},
+      {icon:'ti-leaf',color:'g',text:'经济产业省GX补贴2025年度第二批申请窗口开放',meta:'节能/数字化设备采购可申请部分成本补贴',tags:[['ESG新规','g']]},
+      {icon:'ti-world',color:'p',text:'日本与主要贸易伙伴关税谈判保持稳定,无重大变化',meta:'对外贸易环境总体平稳',tags:[['地缘政治','p']]}
+    ],
+    capital:[
+      {icon:'ti-bank',color:'g',text:'日本无外汇管制,资金汇出汇入自由',meta:'但法人银行账户开户周期较长(6-8周)'},
+      {icon:'ti-file-invoice',color:'b',text:'中日税收协定下股息预提税优惠税率10%',meta:'需提交税收居民证明文件享受优惠'},
+      {icon:'ti-alert-triangle',color:'a',text:'日元持续走弱,人民币计价收入汇回时需评估汇兑损益',meta:'建议关注是否需要远期锁汇安排'}
+    ],
+    taxpolicy:[
+      {color:'#dc2626',text:'数字服务消费税征收范围扩大解释',date:'2026年生效'},
+      {color:'#22c55e',text:'GX绿色转型补贴第二批申请窗口',date:'开放中'},
+      {color:'#22c55e',text:'中小企业法人税优惠税制延长至2026年',date:'已生效'}
+    ],
+    geo:[
+      {color:'#22c55e',text:'日本政局相对稳定,无重大政策转向预期',date:'稳定'},
+      {color:'#f59e0b',text:'日元贬值趋势持续,日本央行政策动向需密切关注',date:'关注中'}
+    ]
+  },
+  hk: {
+    sub:'HKD/CNY · 香港财税合规与汇率监控',
+    fxLabel:'HKD/CNY', fxBase:0.93, fxSub:'联系汇率,极稳定',
+    vol:'0.3%', volSub:'极低波动',
+    policyCount:2, geoLevel:'低', geoSub:'大中华资金枢纽,政局稳定',
+    fxHistory:[0.930,0.930,0.9301,0.930,0.9299,0.930,0.93],
+    keyRates:[['利得税(首200万)','8.25%'],['利得税(超过部分)','16.5%'],['HKD联系汇率','7.75-7.85/USD']],
+    news:[
+      {icon:'ti-receipt-tax',color:'a',text:'税务局加强离岸收入豁免(Offshore Claim)审查,要求更详细业务实质证明',meta:'已享受离岸豁免的企业需重新评估文件完备性',tags:[['税收新政','a']]},
+      {icon:'ti-leaf',color:'a',text:'港交所ESG报告新规细则正式生效,影响上市房企供应链披露',meta:'若客户为港股上市企业,供应商ESG数据要求或传导',tags:[['ESG新规','a']]},
+      {icon:'ti-cash-banknote',color:'g',text:'HKD联系汇率制度运行平稳,无脱钩风险信号',meta:'港元兑人民币汇率波动率维持在历史低位',tags:[['汇率','g']]},
+      {icon:'ti-world',color:'p',text:'香港作为大中华区资金调度枢纽地位持续稳固',meta:'跨境理财通、债券通等机制持续优化',tags:[['资金事项','b']]}
+    ],
+    capital:[
+      {icon:'ti-bank',color:'g',text:'香港无外汇管制,与人民币资金往来渠道丰富(CIPS/跨境理财通)',meta:'是中资企业海外资金调度的首选枢纽之一'},
+      {icon:'ti-alert-triangle',color:'a',text:'银行对中资企业账户KYC审查持续从严',meta:'建议提前准备集团架构、业务实质说明文件'},
+      {icon:'ti-file-invoice',color:'b',text:'内地与香港税收安排下股息预提税优惠5%/10%',meta:'需满足受益所有人测试要求'}
+    ],
+    taxpolicy:[
+      {color:'#f59e0b',text:'离岸收入豁免审查趋严',date:'持续收紧'},
+      {color:'#22c55e',text:'两级利得税制维持不变(8.25%/16.5%)',date:'已生效'},
+      {color:'#f59e0b',text:'ESG供应链披露新规生效',date:'2026年生效'}
+    ],
+    geo:[
+      {color:'#22c55e',text:'香港政治社会环境保持稳定',date:'稳定'},
+      {color:'#22c55e',text:'联系汇率制度信心稳固',date:'稳定'}
+    ]
+  },
+  my: {
+    sub:'MYR/CNY · 马来西亚财税合规与汇率监控',
+    fxLabel:'MYR/CNY', fxBase:1.61, fxSub:'近7日相对稳定',
+    vol:'1.5%', volSub:'正常区间',
+    policyCount:2, geoLevel:'低', geoSub:'政局稳定,数字经济政策积极',
+    fxHistory:[1.605,1.608,1.610,1.609,1.611,1.610,1.61],
+    keyRates:[['企业所得税(标准)','24%'],['SST数字服务税','6%'],['SME优惠税率','15-17%']],
+    news:[
+      {icon:'ti-receipt-tax',color:'a',text:'MDEC更新MSC Malaysia地位申请数字经济企业评定标准',meta:'科技/SaaS企业申请税务优惠的认定条件有调整',tags:[['税收新政','a']]},
+      {icon:'ti-leaf',color:'g',text:'国家能源转型计划(NETR)发布绿色建筑科技采购指引',meta:'建筑业IoT节能设备或纳入政府绿色采购清单',tags:[['ESG新规','g']]},
+      {icon:'ti-cash-banknote',color:'b',text:'马来西亚央行维持基准利率不变,令吉汇率小幅波动',meta:'MYR/CNY 30天波动率1.5%,处于正常区间',tags:[['汇率','b']]},
+      {icon:'ti-building-bank',color:'b',text:'SME企业所得税优惠税制维持不变',meta:'前60万令吉利润适用15-17%优惠税率',tags:[['资金事项','b']]}
+    ],
+    capital:[
+      {icon:'ti-bank',color:'g',text:'马来西亚资金汇出汇入总体自由,大额交易需通过银行报备',meta:'央行(BNM)对超额度跨境交易有申报要求'},
+      {icon:'ti-file-invoice',color:'b',text:'中马税收协定下股息预提税优惠税率10%',meta:'需提交税收居民证明文件'},
+      {icon:'ti-credit-card',color:'g',text:'本地银行企业开户流程相对标准化',meta:'外资企业开户周期通常2-4周'}
+    ],
+    taxpolicy:[
+      {color:'#f59e0b',text:'MSC Malaysia地位申请标准更新',date:'2026年生效'},
+      {color:'#22c55e',text:'NETR绿色建筑采购指引发布',date:'已发布'},
+      {color:'#22c55e',text:'SME企业所得税优惠维持不变',date:'已生效'}
+    ],
+    geo:[
+      {color:'#22c55e',text:'马来西亚政局相对稳定,数字经济政策持续推进',date:'稳定'},
+      {color:'#22c55e',text:'与新加坡经济联系紧密,区域供应链地位稳固',date:'稳定'}
+    ]
+  },
+  id: {
+    sub:'IDR/CNY · 印尼财税合规与汇率监控',
+    fxLabel:'IDR/CNY', fxBase:0.00044, fxSub:'印尼盾走弱趋势',
+    vol:'4.2%', volSub:'接近预警阈值',
+    policyCount:2, geoLevel:'中', geoSub:'政策执行波动性较高',
+    fxHistory:[0.000442,0.000441,0.000440,0.000439,0.000440,0.000439,0.00044],
+    keyRates:[['企业所得税','22%'],['增值税(PPN)','11%'],['小微企业简易税率','0.5%']],
+    news:[
+      {icon:'ti-receipt-tax',color:'r',text:'财政部扩大PMSE数字服务税征收范围至云服务订阅',meta:'跨境SaaS订阅向印尼客户收费需重新评估征税义务',tags:[['税收新政','r']]},
+      {icon:'ti-leaf',color:'g',text:'劳工部发布建筑业工地安全数字化(K3)新指引',meta:'工地IoT安全监测产品需求政策利好',tags:[['ESG新规','g']]},
+      {icon:'ti-cash-banknote',color:'a',text:'印尼盾持续走弱,30天波动率4.2%,接近预警阈值',meta:'印尼央行可能采取干预措施稳定汇率',tags:[['汇率预警','a']]},
+      {icon:'ti-world',color:'p',text:'印尼大宗商品出口政策调整对整体外汇供给产生影响',meta:'间接影响印尼盾汇率走势',tags:[['地缘政治','p']]}
+    ],
+    capital:[
+      {icon:'ti-alert-triangle',color:'a',text:'印尼对跨境资金汇出有外汇申报要求(BI报告)',meta:'大额交易需向印尼央行报备,流程相对繁琐'},
+      {icon:'ti-file-invoice',color:'b',text:'中印尼税收协定下股息预提税优惠税率10%',meta:'需提交税收居民证明文件'},
+      {icon:'ti-alert-triangle',color:'a',text:'印尼盾走弱环境下,建议评估收入计价货币与汇兑风险对冲',meta:'部分企业选择以美元计价合同规避本币波动'}
+    ],
+    taxpolicy:[
+      {color:'#dc2626',text:'PMSE数字服务税征收范围扩大',date:'2026年生效'},
+      {color:'#22c55e',text:'建筑业工地安全数字化指引',date:'已发布'},
+      {color:'#22c55e',text:'小微企业0.5%简易所得税延长',date:'延续有效'}
+    ],
+    geo:[
+      {color:'#f59e0b',text:'印尼盾汇率波动加大,需关注央行干预动作',date:'关注中'},
+      {color:'#f59e0b',text:'大宗商品价格波动对印尼整体经济政策有传导影响',date:'关注中'}
+    ]
+  },
+  ae: {
+    sub:'AED/CNY · 迪拜财税合规与汇率监控',
+    fxLabel:'AED/CNY', fxBase:1.97, fxSub:'与美元挂钩,极稳定',
+    vol:'0.4%', volSub:'极低波动',
+    policyCount:2, geoLevel:'中', geoSub:'区域地缘局势需关注',
+    fxHistory:[1.969,1.970,1.970,1.971,1.970,1.970,1.97],
+    keyRates:[['企业所得税','9%'],['VAT税率','5%'],['Free Zone优惠税率','0%(符合条件)']],
+    news:[
+      {icon:'ti-receipt-tax',color:'r',text:'联邦税务局(FTA)发布Qualifying Free Zone Person最新认定细则',meta:'Free Zone企业保留0%税率资格的条件更明确化',tags:[['税收新政','r']]},
+      {icon:'ti-leaf',color:'a',text:'迪拜市政府扩大绿色建筑强制认证(Al Sa\'fat)适用项目范围',meta:'新建项目能效监测设备需求或上升',tags:[['ESG新规','a']]},
+      {icon:'ti-cash-banknote',color:'g',text:'AED随美元汇率保持稳定,汇率风险极低',meta:'适合作为区域资金中转与结算货币',tags:[['汇率','g']]},
+      {icon:'ti-world',color:'p',text:'中东地区地缘局势对部分航运与物流路线有阶段性影响',meta:'建议关注供应链时效性变化',tags:[['地缘政治','p']]}
+    ],
+    capital:[
+      {icon:'ti-bank',color:'g',text:'迪拜无外汇管制,是中东资金调度核心枢纽',meta:'资金可自由汇入汇出,与全球主要货币兑换便利'},
+      {icon:'ti-alert-triangle',color:'a',text:'新设公司银行开户KYC审查较严,周期4-8周',meta:'建议提前准备集团背景与资金来源文件'},
+      {icon:'ti-file-invoice',color:'b',text:'中阿尚无全面税收协定,股息汇出需评估默认预提税安排',meta:'建议结合Free Zone架构优化整体税负'}
+    ],
+    taxpolicy:[
+      {color:'#dc2626',text:'Qualifying Free Zone Person认定细则更新',date:'2026年生效'},
+      {color:'#f59e0b',text:'绿色建筑认证适用范围扩大',date:'已发布'},
+      {color:'#22c55e',text:'企业所得税9%标准税率维持不变',date:'已生效'}
+    ],
+    geo:[
+      {color:'#f59e0b',text:'中东区域地缘局势存在阶段性波动',date:'持续监控'},
+      {color:'#22c55e',text:'UAE国内政治经济环境保持高度稳定',date:'稳定'}
+    ]
+  },
+  sa: {
+    sub:'SAR/CNY · 沙特财税合规与汇率监控',
+    fxLabel:'SAR/CNY', fxBase:1.93, fxSub:'与美元挂钩,极稳定',
+    vol:'0.4%', volSub:'极低波动',
+    policyCount:2, geoLevel:'中', geoSub:'Vision 2030推进,区域局势需关注',
+    fxHistory:[1.929,1.930,1.930,1.931,1.930,1.930,1.93],
+    keyRates:[['企业所得税(外资)','20%'],['VAT税率','15%'],['Zakat税率(本地企业)','2.5%']],
+    news:[
+      {icon:'ti-receipt-tax',color:'r',text:'MISA更新外资准入行业目录,IoT/智能建筑类细则明确',meta:'相关行业外资持股比例与审批条件有调整',tags:[['税收新政','r']]},
+      {icon:'ti-flag',color:'a',text:'Nitaqat国民化用工比例要求2025年调整,部分行业收紧',meta:'影响外籍员工工作签证申请与续签节奏',tags:[['资金事项','a']]},
+      {icon:'ti-cash-banknote',color:'g',text:'SAR随美元汇率保持稳定,跨境结算汇率风险低',meta:'适合作为大型基建项目的结算货币之一',tags:[['汇率','g']]},
+      {icon:'ti-world',color:'p',text:'NEOM等大型基建项目发布2025年供应商预审名单征集',meta:'建筑科技/IoT安全产品类供应商存在准入机会',tags:[['地缘政治','b'],['市场机会','g']]}
+    ],
+    capital:[
+      {icon:'ti-bank',color:'g',text:'沙特无外汇管制,资金汇出汇入相对自由',meta:'但大型项目款项结算流程通常较长'},
+      {icon:'ti-alert-triangle',color:'a',text:'外资企业在沙特设立需通过MISA投资许可,涉及最低资本要求',meta:'建议提前规划资本结构与出资节奏'},
+      {icon:'ti-file-invoice',color:'b',text:'中沙尚无全面税收协定,跨境股息预提税按当地法规执行',meta:'建议结合Free Zone(迪拜)架构优化区域税负'}
+    ],
+    taxpolicy:[
+      {color:'#dc2626',text:'MISA外资准入行业目录更新',date:'2026年生效'},
+      {color:'#f59e0b',text:'Nitaqat国民化比例要求调整',date:'2025年部分行业生效'},
+      {color:'#22c55e',text:'企业所得税20%标准税率维持不变',date:'已生效'}
+    ],
+    geo:[
+      {color:'#f59e0b',text:'中东区域地缘局势存在阶段性波动,需关注供应链影响',date:'持续监控'},
+      {color:'#22c55e',text:'Vision 2030基建投资计划持续推进,政策方向明确',date:'稳定且利好'}
+    ]
+  },
+  au: {
+    sub:'AUD/CNY · 澳大利亚财税合规与汇率监控',
+    fxLabel:'AUD/CNY', fxBase:4.72, fxSub:'近7日相对有利',
+    vol:'2.0%', volSub:'正常区间',
+    policyCount:2, geoLevel:'低', geoSub:'政局稳定,中澳关系趋于平稳',
+    fxHistory:[4.705,4.710,4.715,4.718,4.720,4.722,4.72],
+    keyRates:[['企业所得税(标准)','30%'],['企业所得税(中小企业)','25%'],['GST税率','10%']],
+    news:[
+      {icon:'ti-receipt-tax',color:'r',text:'ATO更新跨境数字服务GST征收指引("Netflix Tax")',meta:'SaaS订阅向澄洲消费者销售的GST注册时点要求明确化',tags:[['税收新政','r']]},
+      {icon:'ti-leaf',color:'a',text:'澄洲气候相关财务披露要求第二阶段企业名单公布',meta:'大型企业客户供应链ESG数据要求或传导至供应商',tags:[['ESG新规','a']]},
+      {icon:'ti-cash-banknote',color:'g',text:'AUD/CNY处于近期相对有利区间,30天波动率2.0%',meta:'对向澄洲汇出资金或采购相对有利的窗口期',tags:[['汇率','g']]},
+      {icon:'ti-world',color:'g',text:'中澄经贸关系持续回暖,部分领域合作机会增加',meta:'整体营商环境对中资企业相对友好',tags:[['地缘政治','g']]}
+    ],
+    capital:[
+      {icon:'ti-bank',color:'g',text:'澄洲资金汇出汇入总体自由,大额交易需符合反洗钱申报要求',meta:'AUSTRAC对大额跨境转账有监控但不构成实质障碍'},
+      {icon:'ti-file-invoice',color:'b',text:'中澄税收协定下股息预提税优惠税率15%(一般)/5%(符合条件)',meta:'需提交税收居民证明文件'},
+      {icon:'ti-credit-card',color:'g',text:'本地银行企业开户流程标准化,周期通常1-2周',meta:'在英语国家中属于开户效率较高的市场'}
+    ],
+    taxpolicy:[
+      {color:'#dc2626',text:'跨境数字服务GST征收指引更新',date:'2026年生效'},
+      {color:'#f59e0b',text:'气候相关财务披露第二阶段名单公布',date:'2026年生效'},
+      {color:'#22c55e',text:'中小企业25%优惠所得税率维持不变',date:'已生效'}
+    ],
+    geo:[
+      {color:'#22c55e',text:'中澄经贸关系回暖,营商环境趋于友好',date:'积极信号'},
+      {color:'#22c55e',text:'澄洲国内政治环境保持稳定',date:'稳定'}
+    ]
+  }
+};
+
+function pad(n){return n.toString().padStart(2,'0')}
+function tick(){
+  const now=new Date();
+  document.getElementById('clock').textContent=now.toLocaleDateString('zh-CN')+' '+pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
+  document.getElementById('last-upd').textContent='最后同步: '+pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
+}
+
+let currentFxBase = 7.2541;
+function fxTick(){
+  const r = currentFxBase + (Math.random()-0.5)*currentFxBase*0.0015;
+  document.getElementById('rate-val').textContent = r < 1 ? r.toFixed(6) : r.toFixed(4);
+}
+
+const geoColors = {'低':'#16a34a','中':'#d97706','高':'#dc2626'};
+
+function render(){
+  const key = document.getElementById('country-sel').value;
+  const d = DATA[key];
+
+  document.getElementById('d-sub').textContent = d.sub;
+  document.getElementById('t-fx-label').textContent = d.fxLabel;
+  document.getElementById('t-fx-sub').textContent = d.fxSub;
+  document.getElementById('t-vol').textContent = d.vol;
+  document.getElementById('t-vol-sub').textContent = d.volSub;
+  document.getElementById('t-policy').textContent = d.policyCount;
+  document.getElementById('t-geo').innerHTML = `<span style="color:${geoColors[d.geoLevel]}">${d.geoLevel}</span>`;
+  document.getElementById('t-geo-sub').textContent = d.geoSub;
+  document.getElementById('fx-sub2').textContent = d.fxLabel + ' 近7日趋势';
+
+  currentFxBase = d.fxBase;
+  fxTick();
+
+  // FX bar chart
+  const maxV = Math.max(...d.fxHistory);
+  const minV = Math.min(...d.fxHistory);
+  const range = (maxV - minV) || maxV*0.001;
+  const barsHtml = d.fxHistory.map(v=>{
+    const h = 15 + ((v-minV)/range)*35;
+    return `<div class="fx-bar" style="height:${h}px"></div>`;
+  }).join('');
+  document.getElementById('fx-chart').innerHTML = barsHtml;
+  document.getElementById('fx-labels').innerHTML = ['D-6','D-5','D-4','D-3','D-2','D-1','今日'].map(l=>`<span>${l}</span>`).join('');
+
+  document.getElementById('key-rates').innerHTML = d.keyRates.map(r=>`
+    <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:12px">
+      <span style="color:var(--color-text-secondary)">${r[0]}</span><span style="font-weight:500;color:var(--color-text-primary)">${r[1]}</span>
+    </div>`).join('');
+
+  document.getElementById('news-list').innerHTML = d.news.map(n=>`
+    <div class="item-row">
+      <div class="icon icon-${n.color}"><i class="ti ${n.icon}" aria-hidden="true"></i></div>
+      <div>
+        <div class="itxt">${n.text}</div>
+        <div class="imeta">${n.meta}</div>
+        ${n.tags.map(t=>`<span class="tag tag-${t[1]}">${t[0]}</span>`).join('')}
+      </div>
+    </div>`).join('');
+
+  document.getElementById('capital-list').innerHTML = d.capital.map(c=>`
+    <div class="item-row">
+      <div class="icon icon-${c.color}"><i class="ti ${c.icon}" aria-hidden="true"></i></div>
+      <div><div class="itxt">${c.text}</div><div class="imeta">${c.meta}</div></div>
+    </div>`).join('');
+
+  document.getElementById('taxpolicy-list').innerHTML = d.taxpolicy.map(t=>`
+    <div class="tl-item"><div class="tl-dot" style="background:${t.color}"></div><div><div class="tl-text">${t.text}</div><div class="tl-date">${t.date}</div></div></div>`).join('');
+
+  document.getElementById('geo-list').innerHTML = d.geo.map(g=>`
+    <div class="tl-item"><div class="tl-dot" style="background:${g.color}"></div><div><div class="tl-text">${g.text}</div><div class="tl-date">${g.date}</div></div></div>`).join('');
+}
+
+tick();setInterval(tick,1000);
+setInterval(fxTick,4000);
+render();
+</script>
